@@ -34,7 +34,7 @@ Subsequent response dedinitions will only detail the expected value of the `data
             "Wisdom": 20,
             "Intelligence": 9001,
             "Charisma": 0
-        }
+        },
         "Not sure yet": ""
     }
 ]
@@ -56,6 +56,7 @@ Subsequent response dedinitions will only detail the expected value of the `data
 [
     {
         "name": "Character-Name",
+        "identifier": some number,
         "Stats": {
             "Strength": 20,
             "Dexterity": 20,
@@ -63,8 +64,46 @@ Subsequent response dedinitions will only detail the expected value of the `data
             "Wisdom": 20,
             "Intelligence": 9001,
             "Charisma": 0
-        }
+        },
         "Not sure yet": ""
     }
 ]
 ```
+
+## Lookup Character Details
+
+`GET /character/<identifier>`
+
+**Response**
+
+- `404 Not Found` If the Character does not exist.
+- `200 OK` on success
+
+```json
+[
+    {
+        "name": "Character-Name",
+        "identifier": some number,
+        "Stats": {
+            "Strength": 20,
+            "Dexterity": 20,
+            "Constitution": 20,
+            "Wisdom": 20,
+            "Intelligence": 9001,
+            "Charisma": 0
+        },
+        "Not sure yet": ""
+    }
+]
+```
+
+## Delete a device
+
+**Definition**
+
+`DELETE /character/<identifier>`
+
+**Response**
+
+- `404 Not Found` If the character does not exist
+- `204 No Content` IF Succesful
