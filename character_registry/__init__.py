@@ -1,11 +1,12 @@
 # Import the framework
 from flask import Flask, g
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 
 # Import Other stuff
 import os
 import markdown
 import shelve
+import secrets
 # Create an instance of Flask
 app = Flask(__name__)
 api = Api(app)
@@ -35,7 +36,7 @@ def index():
         #Convert to HTML
         return markdown.markdown(content)
 
-def CharacterList(Resource):
+class CharacterList(Resource):
     def get(self):
         shelf = get_db()
         keys = list(shelf.keys())
@@ -49,5 +50,45 @@ def CharacterList(Resource):
             'message': 'Success',
             'data': devices
         }
+    def post(self):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("name",required=True)
+        parser.add_argument("stats", required=True)
+
+        args = parser.parse_args()
+
+        shelf = get_db()
+        token = secrets.token_urlsafe()
+        while token in shelf:
+            token = secrets.token_urlsafe()
+        args["identifier"] = token
+        shelf[token] = args
+
+        return {
+            "message": 'Character registered',
+            'data': args
+        }
+
+class Character(Resource):
+    def get(self,identifier):
+        shelf = get_db()
+
+        # If the key does not exist in the data store return a 404 error
+        if not (identifier in shelf):
+            return {'message': "Character not found","data": {}}, 404
+        
+        return {"message": "Character found", 'data': shelf[identifier]},200
+
+    def delete(self, identifier):
+        shelf = get_db()
+
+         # If the key does not exist in the data store return a 404 error
+        if not (identifier in shelf):
+            return {'message': "Character not found","data": {}}, 404
+        
+        del shelf[identifier]
+        return '', 204
 
 api.add_resource(CharacterList, '/characters')
+api.add_resource(Character,"/character/<string:identifier>")
