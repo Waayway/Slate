@@ -1,15 +1,18 @@
 # Import the framework
 from flask import Flask, g
 from flask_restful import Resource, Api, reqparse
+from flask_cors import CORS
 
 # Import Other stuff
 import os
 import markdown
 import shelve
 import secrets
+import json
 # Create an instance of Flask
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -41,14 +44,14 @@ class CharacterList(Resource):
         shelf = get_db()
         keys = list(shelf.keys())
 
-        devices = []
+        characters = []
 
         for key in keys:
-            devices.append(shelf[key])
-        
+            characters.append(shelf[key])
+            characters[len(characters)-1]["stats"] = json.loads(characters[len(characters)-1]["stats"])
         return {
             'message': 'Success',
-            'data': devices
+            'data': characters
         }
     def post(self):
         parser = reqparse.RequestParser()
