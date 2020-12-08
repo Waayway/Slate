@@ -8,7 +8,7 @@ import os
 import markdown
 import shelve
 import secrets
-import json
+import ast
 # Create an instance of Flask
 app = Flask(__name__)
 api = Api(app)
@@ -48,6 +48,7 @@ class CharacterList(Resource):
 
         for key in keys:
             characters.append(shelf[key])
+            characters[-1]['stats'] = ast.literal_eval(characters[-1]['stats'])
         return {
             'message': 'Success',   
             'data': characters
