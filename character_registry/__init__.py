@@ -48,9 +48,8 @@ class CharacterList(Resource):
 
         for key in keys:
             characters.append(shelf[key])
-            characters[len(characters)-1]["stats"] = json.loads(characters[len(characters)-1]["stats"])
         return {
-            'message': 'Success',
+            'message': 'Success',   
             'data': characters
         }
     def post(self):
